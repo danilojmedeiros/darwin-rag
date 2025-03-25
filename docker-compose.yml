@@ -1,0 +1,10 @@
+services:
+  rag-app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - HUGGINGFACEHUB_API_TOKEN
+    restart: unless-stopped
