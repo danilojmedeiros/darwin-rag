@@ -111,7 +111,7 @@ graph TD
     subgraph "Sistema RAG"
         C1[Vetorizar e Indexar Documentos] 
         C2[Consulta ao Banco Vetorial]
-        C3[Modelo de Linguagem (LLM)]
+        C3["Modelo de Linguagem - LLM"]
         
         C1 -->|Armazena embeddings| C2
         C2 -->|Retorna chunks relevantes| C3
@@ -121,17 +121,17 @@ graph TD
     C --> |Resposta JSON| D["{\"response\": \"Texto gerado pelo LLM\"}"]
     
     subgraph "Componentes"
-        C1a[Carrega documentos (TextLoader)]
-        C1b[Divide em chunks (RecursiveCharacterTextSplitter)]
-        C1c[Gera embeddings (HuggingFaceEmbeddings)]
-        C1d[Armazena no banco vetorial (ChromaDB)]
+        C1a["Carrega documentos - TextLoader"]
+        C1b["Divide em chunks - RecursiveCharacterTextSplitter"]
+        C1c["Gera embeddings - HuggingFaceEmbeddings"]
+        C1d["Armazena no banco vetorial - ChromaDB"]
         
-        C2a[Busca por similaridade (ChromaDB)]
-        C2b[Retorna os chunks mais relevantes]
+        C2a["Busca por similaridade - ChromaDB"]
+        C2b["Retorna os chunks mais relevantes"]
         
-        C3a[Usa Mistral-7B-Instruct]
-        C3b[Contextualiza com chunks]
-        C3c[Gera resposta final]
+        C3a["Usa Mistral-7B-Instruct"]
+        C3b["Contextualiza com chunks"]
+        C3c["Gera resposta final"]
         
         C1a --> C1b --> C1c --> C1d
         C1d --> C2a --> C2b
