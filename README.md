@@ -101,6 +101,43 @@ python cli.py --interactive
 # Consulta única
 python cli.py --query "What does Darwin say about natural selection?"
 ```
+## Arquitetura do sistema RAG
+
+```mermaid
+graph TD
+    A[Usuário] -->|Envia requisição| B[API FastAPI]
+    B --> |Consulta| C[Sistema RAG]
+    
+    subgraph "Sistema RAG"
+        C1[Vetorizar e Indexar Documentos] 
+        C2[Consulta ao Banco Vetorial]
+        C3[Modelo de Linguagem (LLM)]
+        
+        C1 -->|Armazena embeddings| C2
+        C2 -->|Retorna chunks relevantes| C3
+        C3 -->|Gera resposta final| C
+    end
+
+    C --> |Resposta JSON| D["{\"response\": \"Texto gerado pelo LLM\"}"]
+    
+    subgraph "Componentes"
+        C1a[Carrega documentos (TextLoader)]
+        C1b[Divide em chunks (RecursiveCharacterTextSplitter)]
+        C1c[Gera embeddings (HuggingFaceEmbeddings)]
+        C1d[Armazena no banco vetorial (ChromaDB)]
+        
+        C2a[Busca por similaridade (ChromaDB)]
+        C2b[Retorna os chunks mais relevantes]
+        
+        C3a[Usa Mistral-7B-Instruct]
+        C3b[Contextualiza com chunks]
+        C3c[Gera resposta final]
+        
+        C1a --> C1b --> C1c --> C1d
+        C1d --> C2a --> C2b
+        C2b --> C3a --> C3b --> C3c
+    end
+```
 
 ## Persistência de dados
 
