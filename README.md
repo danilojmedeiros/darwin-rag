@@ -101,41 +101,45 @@ python cli.py --interactive
 # Consulta única
 python cli.py --query "What does Darwin say about natural selection?"
 ```
-## Arquitetura do sistema RAG
+## Arquitetura do Sistema
+
+Abaixo está o diagrama da arquitetura:
 
 ```mermaid
 graph TD
-    A[Usuário] -->|Envia requisição| B[API FastAPI]
-    B --> |Consulta| C[Sistema RAG]
+    A[Usuário] -->|Envia requisição| B[API FastAPI / CLI]
+    B -->|Consulta| C[Sistema RAG]
     
     subgraph "Sistema RAG"
-        C1[Vetorizar e Indexar Documentos] 
-        C2[Consulta ao Banco Vetorial]
-        C3["Modelo de Linguagem - LLM"]
-        
-        C1 -->|Armazena embeddings| C2
-        C2 -->|Retorna chunks relevantes| C3
-        C3 -->|Gera resposta final| C
+        C1[Vetorização<br>e Indexação] -->|Embeddings| C2[Busca Vetorial]
+        C2 -->|Chunks Relevantes| C3[LLM]
+        C3 -->|Resposta Final| C
     end
-
-    C --> |Resposta JSON| D["{\"response\": \"Texto gerado pelo LLM\"}"]
     
-    subgraph "Componentes"
-        C1a["Carrega documentos - TextLoader"]
-        C1b["Divide em chunks - RecursiveCharacterTextSplitter"]
-        C1c["Gera embeddings - HuggingFaceEmbeddings"]
-        C1d["Armazena no banco vetorial - ChromaDB"]
+    C -->|Resposta JSON| D["{\"response\": \"Texto gerado\"}"]
+    D -->|Retorna| B
+    B -->|Exibe| A
+    
+    subgraph "Componentes Detalhados"
+        C1a[TextLoader] --> C1b[Recursive<br>TextSplitter]
+        C1b --> C1c[HuggingFace<br>Embeddings]
+        C1c --> C1d[ChromaDB]
         
-        C2a["Busca por similaridade - ChromaDB"]
-        C2b["Retorna os chunks mais relevantes"]
+        C2a[ChromaDB<br>Similarity Search] --> C2b[Top Chunks]
         
-        C3a["Usa Mistral-7B-Instruct"]
-        C3b["Contextualiza com chunks"]
-        C3c["Gera resposta final"]
+        C3a[Mistral-7B<br>Instruct] --> C3b[Prompt c/<br>Contexto] --> C3c[Resposta]
         
-        C1a --> C1b --> C1c --> C1d
-        C1d --> C2a --> C2b
-        C2b --> C3a --> C3b --> C3c
+        C1 --> C1a
+        C1d --> C2
+        C2 --> C2a
+        C2b --> C3
+        C3 --> C3a
+    end
+    
+    subgraph "Infraestrutura"
+        E[Docker Container] -->|Hospeda| B
+        E -->|Volume| C1a
+        E -->|Env| F[HUGGINGFACE<br>API_TOKEN]
     end
 ```
 
