@@ -116,7 +116,7 @@ graph TD
         C3 -->|Resposta Final| C
     end
     
-    C -->|Resposta JSON| D["{\"response\": \"Texto gerado\"}"]
+    C -->|Resposta JSON| D[Resposta: Texto gerado]
     D -->|Retorna| B
     B -->|Exibe| A
     
