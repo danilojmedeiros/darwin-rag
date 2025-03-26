@@ -51,7 +51,7 @@ def create_rag_system(file_path):
     prompt = ChatPromptTemplate.from_template(template)
     
     # Configurar LLM e pipeline
-    llm = HuggingFaceHub(repo_id="google/flan-t5-base", model_kwargs={"temperature": 0.1, "max_length": 512})
+    llm = HuggingFaceHub(repo_id="mistralai/Mistral-7B-Instruct-v0.2", model_kwargs={"temperature": 0.1, "max_length": 512})
     
     rag_chain = ({"context": retriever, "question": RunnablePassthrough()} | prompt | llm | StrOutputParser())
     
